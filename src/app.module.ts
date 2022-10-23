@@ -17,6 +17,11 @@ import * as Joi from 'joi'
 					.pattern(new RegExp('^(0|[1-9][0-9]*).(0|[1-9][0-9]*).(0|[1-9][0-9]*)(-[a-zA-Z0-9]+)?$'))
 					.required(),
 				APPLICATION_PORT: Joi.number().integer().min(0).max(65535).default(3000),
+				MYSQL_HOST: Joi.string().default('localhost'),
+				MYSQL_PORT: Joi.number().integer().min(0).max(65535).default(3306),
+				MYSQL_USERNAME: Joi.string().required(),
+				MYSQL_PASSWORD: Joi.string().required(),
+				MYSQL_DATABASE: Joi.string().required(),
 			}),
 		}),
 		HealthModule,
