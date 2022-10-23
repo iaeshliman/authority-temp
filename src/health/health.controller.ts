@@ -1,13 +1,14 @@
 import { Controller, Get } from '@nestjs/common'
-import { HealthCheckService, HttpHealthIndicator, HealthCheck } from '@nestjs/terminus'
-import { AppHealthIndicator } from '../app.health'
+import { HealthCheckService, HealthCheck } from '@nestjs/terminus'
+import { AppHealthIndicator } from 'src/app.health'
+import { DatabaseHealthIndicator } from 'src/database.health'
 
 @Controller('health')
 export class HealthController {
 	constructor(
 		private health: HealthCheckService,
-		private http: HttpHealthIndicator,
 		private appHealthIndicator: AppHealthIndicator,
+		private databaseHealthIndicator: DatabaseHealthIndicator,
 	) {}
 
 	@Get()
@@ -15,7 +16,19 @@ export class HealthController {
 	check() {
 		return this.health.check([
 			() => this.appHealthIndicator.isHealthy('application'),
-			() => this.http.pingCheck('nestjs-core', 'https://docs.nestjs.com'),
+			() => this.databaseHealthIndicator.isHealthy('database'),
 		])
+	}
+
+	@Get('application')
+	@HealthCheck()
+	checkApplication() {
+		return this.health.check([() => this.appHealthIndicator.isHealthy('application')])
+	}
+
+	@Get('database')
+	@HealthCheck()
+	checkDatabase() {
+		return this.health.check([() => this.databaseHealthIndicator.isHealthy('database')])
 	}
 }

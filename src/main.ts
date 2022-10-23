@@ -9,9 +9,7 @@ async function bootstrap() {
 	app.enableShutdownHooks()
 
 	// Add prefix to all routes
-	app.setGlobalPrefix('api', {
-		exclude: [{ path: 'health', method: RequestMethod.GET }],
-	})
+	app.setGlobalPrefix('api')
 
 	await app.listen(3000)
 }

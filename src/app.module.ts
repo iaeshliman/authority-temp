@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import configuration from './config/configuration'
 import { HealthModule } from './health/health.module'
 import * as Joi from 'joi'
+import { SequelizeModule } from '@nestjs/sequelize'
 
 @Module({
 	imports: [
@@ -23,6 +24,13 @@ import * as Joi from 'joi'
 				MYSQL_PASSWORD: Joi.string().required(),
 				MYSQL_DATABASE: Joi.string().required(),
 			}),
+		}),
+		SequelizeModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: (configService: ConfigService) => ({
+				...configService.get('sequelize'),
+			}),
+			inject: [ConfigService],
 		}),
 		HealthModule,
 	],
