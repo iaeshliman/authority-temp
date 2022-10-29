@@ -1,22 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { HealthIndicator, HealthIndicatorResult, HealthCheckError } from '@nestjs/terminus'
-import { Sequelize } from 'sequelize-typescript'
+import { DataSource } from 'typeorm'
 
 @Injectable()
 export class DatabaseHealthIndicator extends HealthIndicator {
-	constructor(private sequelize: Sequelize) {
+	constructor(private dataSource: DataSource) {
 		super()
 	}
 
 	async isHealthy(key: string): Promise<HealthIndicatorResult> {
-		try {
-			await this.sequelize.authenticate()
-			return this.getStatus(key, true)
-		} catch (error) {
-			throw new HealthCheckError(
-				'database check failed',
-				this.getStatus(key, false, { error: error.name, message: error.message }),
-			)
-		}
+		const connected = this.dataSource.isInitialized
+		if (connected) return this.getStatus(key, true)
+		else throw new HealthCheckError('database check failed', this.getStatus(key, false))
 	}
 }

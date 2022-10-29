@@ -1,10 +1,21 @@
+/**
+ * Dependencies
+ */
+
+// External packages
+import * as Joi from 'joi'
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm'
+
+// Internal packages
 import configuration from './config/configuration'
 import { HealthModule } from './health/health.module'
-import * as Joi from 'joi'
-import { SequelizeModule } from '@nestjs/sequelize'
+import { UsersModule } from './users/users.module'
 
+/**
+ * Module
+ */
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -25,14 +36,15 @@ import { SequelizeModule } from '@nestjs/sequelize'
 				MYSQL_DATABASE: Joi.string().required(),
 			}),
 		}),
-		SequelizeModule.forRootAsync({
+		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
 			useFactory: (configService: ConfigService) => ({
-				...configService.get('sequelize'),
+				...configService.get('database'),
 			}),
 			inject: [ConfigService],
 		}),
 		HealthModule,
+		UsersModule,
 	],
 })
 export class AppModule {}

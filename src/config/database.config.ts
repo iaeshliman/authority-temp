@@ -1,5 +1,5 @@
 export default () => ({
-	dialect: 'mysql',
+	type: 'mysql',
 	host: process.env.MYSQL_HOST,
 	port: Number(process.env.MYSQL_PORT),
 	username: process.env.MYSQL_USERNAME,
