@@ -11,7 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 // Internal packages
 import configuration from './config/configuration'
 import { HealthModule } from './health/health.module'
-import { UsersModule } from './users/users.module'
+import { IdentitiesModule } from './identities/identities.module'
 
 /**
  * Module
@@ -44,7 +44,7 @@ import { UsersModule } from './users/users.module'
 			inject: [ConfigService],
 		}),
 		HealthModule,
-		UsersModule,
+		IdentitiesModule,
 	],
 })
 export class AppModule {}
